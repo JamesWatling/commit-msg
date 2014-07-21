@@ -1,0 +1,7 @@
+message=`cat $1`
+shorten=`sed -ne 's/.*\(http[^"]*\).*/\1/p' $1`
+echo "Shortening Url $shorten ...."
+new_url=`curl -s https://www.googleapis.com/urlshortener/v1/url \-H 'Content-Type: application/json' \-d "{'longUrl': '$shorten'}"`
+latest=`echo $new_url | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["id"]';`
+final=${message/$shorten/$latest}
+echo $final > $1
