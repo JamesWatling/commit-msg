@@ -3,7 +3,7 @@ message=$(cat "$1")
 longUrl=$(sed -ne 's/.*\(https\{0,1\}:\/\/[^"]*\).*/\1/p' "$1" | head -n 1)
 if test "$longUrl"; then
     echo "Shortening Url $longUrl ..."
-    shortUrl=$(curl -s https://www.googleapis.com/urlshortener/v1/url -H 'Content-Type: application/json' -d "{'longUrl': '$longUrl'}" | python -c 'import json, sys; print(json.load(sys.stdin)["id"])')
+    shortUrl=$(curl -s https://www.googleapis.com/urlshortener/v1/url?fields=id -H 'Content-Type: application/json' -d "{'longUrl': '$longUrl'}" | python -c 'import json, sys; print(json.load(sys.stdin)["id"])')
     message=${message/$longUrl/$shortUrl}
     echo "$message" > "$1"
 fi
